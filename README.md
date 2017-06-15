@@ -14,4 +14,8 @@ Useful google scripts to filter your inbox
 10. Select when the script should run. _Notice that the duration should be less than the interval specified in `newer_than` term_
 11. Save the new trigger.
 
+## Alternative usage
+
+You can install [chrome extension](https://github.com/leonhartX/gas-github) that enables you to sync github and google scrips directly. Just clone the script to your git repo, sync your local repo with google scripts and follow the guidelines from earlier.
+
 Enjoy!
