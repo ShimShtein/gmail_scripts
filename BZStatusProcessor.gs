@@ -2,13 +2,14 @@ function processInbox() {
   // process all recent threads in the Inbox (see comment to this answer)
   var threads = GmailApp.search("from:(bugzilla@redhat.com) newer_than:1d");
   GmailApp.createLabel('Bugzilla');
+  var bzLabels = getBzLabels();
   Logger.log("Got threads: " + threads.length);
   for (var i = 0; i < threads.length; i++) {
-    processThread(threads[i]);
+    processThread(threads[i], bzLabels);
   }
 }
 
-function processThread(thread) {
+function processThread(thread, bzLabels) {
   // get all messages in a given thread
   var messages = thread.getMessages();
   var latestStatus = null;
@@ -20,6 +21,11 @@ function processThread(thread) {
   }
   if (latestStatus != null) {
     var label = getLabel(latestStatus);
+    for (var i = 0; i < bzLabels.length; i++) {
+      if (bzLabels[i] != label) {
+        thread.removeLabel(bzLabels[i]);
+      }
+    }
     thread.addLabel(label);
   }
 }
@@ -48,4 +54,16 @@ function getLabel(bzStatus) {
     label = GmailApp.createLabel(labelName);
   }
   return label;
+}
+
+function getBzLabels(){
+  var allLabels = GmailApp.getUserLabels();
+  var bzLabels = [];
+  for (var i = 0; i < allLabels.length; i++) {
+    name = allLabels[i].getName();
+    if (name.indexOf("Bugzilla/") == 0) {
+      bzLabels.push(allLabels[i])
+    }
+  }
+  return bzLabels;
 }
